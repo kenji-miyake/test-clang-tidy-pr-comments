@@ -50,11 +50,12 @@ jobs:
           cp /tmp/clang-tidy-result/fixes.yaml fixes.yaml
 
       - name: Run clang-tidy-pr-comments action
-        uses: platisd/clang-tidy-pr-comments@v1
+        uses: kenji-miyake/clang-tidy-pr-comments@add-option-of-include-non-changed-lines
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           clang_tidy_fixes: fixes.yaml
           pull_request_id: ${{ github.event.number }}
+          include_non_changed_lines: "true"
 
       - name: Mark the workflow as failed if the fixes.yaml file exists
         if: ${{ steps.check-fixes-yaml-existence.outputs.exists == 'true' }}
