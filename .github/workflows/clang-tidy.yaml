@@ -44,6 +44,18 @@ jobs:
           name: clang-tidy-result
           path: /tmp/clang-tidy-result/
 
+      - name: Copy fixes.yaml to access from Docker Container Action
+        if: ${{ steps.check-fixes-yaml-existence.outputs.exists == 'true' }}
+        run: |
+          cp /tmp/clang-tidy-result/fixes.yaml fixes.yaml
+
+      - name: Run clang-tidy-pr-comments action
+        uses: platisd/clang-tidy-pr-comments@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clang_tidy_fixes: fixes.yaml
+          pull_request_id: ${{ github.event.number }}
+
       - name: Mark the workflow as failed if the fixes.yaml file exists
         if: ${{ steps.check-fixes-yaml-existence.outputs.exists == 'true' }}
         run: |
